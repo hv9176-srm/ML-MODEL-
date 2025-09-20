@@ -1,0 +1,35 @@
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+import matplotlib.pyplot as plt
+
+# 1. Load dataset (MNIST handwritten digits 0–9)
+(x_train, y_train), (x_test, y_test) = datasets.mnist.load_data()
+
+# Normalize values (0–255 → 0–1)
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# 2. Build a simple neural network model
+model = models.Sequential([
+    layers.Flatten(input_shape=(28, 28)),   # Flatten 28x28 image to 784 inputs
+    layers.Dense(128, activation='relu'),   # Hidden layer with 128 neurons
+    layers.Dense(10, activation='softmax')  # Output layer (10 classes: digits 0–9)
+])
+
+# 3. Compile the model (choose optimizer + loss function)
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# 4. Train the model (learn from training data)
+model.fit(x_train, y_train, epochs=5)
+
+# 5. Evaluate accuracy on test data
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+print("✅ Test Accuracy:", test_acc)
+
+# 6. Predict the first test image
+plt.imshow(x_test[0], cmap='gray')
+plt.show()
+
+prediction = model.predict(x_test[0:1])
+print("Predicted:", prediction.argmax())  i got a image of 7 while running this code
